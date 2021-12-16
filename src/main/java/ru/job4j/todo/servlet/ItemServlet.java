@@ -16,14 +16,12 @@ import java.util.List;
 
 public class ItemServlet extends HttpServlet {
 
-    private final List<Item> items = HbmStore.instOf().findAll();
     private static final Gson GSON = new GsonBuilder().create();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Item item = GSON.fromJson(req.getReader(), Item.class);
         item.setCreated(new Timestamp(System.currentTimeMillis()));
-        items.add(item);
         HbmStore.instOf().add(item);
 
         resp.setContentType("application/json; charset=utf-8");

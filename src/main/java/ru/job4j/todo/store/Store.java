@@ -11,5 +11,5 @@ public interface Store {
 
     Item findById(int id);
 
-    int replace(int id, Item item);
+    int setDone(int id);
 }

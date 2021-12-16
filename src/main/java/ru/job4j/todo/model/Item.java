@@ -10,13 +10,13 @@ import java.util.Objects;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private int id;
 
-    String description;
+    private String description;
 
-    Timestamp created;
+    private Timestamp created;
 
-    boolean done;
+    private boolean done;
 
     public Item() {
     }

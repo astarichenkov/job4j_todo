@@ -20,6 +20,9 @@ public class HbmStore implements Store, AutoCloseable {
         private static final Store INST = new HbmStore();
     }
 
+    private HbmStore() {
+    }
+
     public static Store instOf() {
         return Lazy.INST;
     }
@@ -54,7 +57,8 @@ public class HbmStore implements Store, AutoCloseable {
         return result;
     }
 
-    public int replace(int id, Item item) {
+    @Override
+    public int setDone(int id) {
         Session session = sf.openSession();
         session.beginTransaction();
         Query query = session.createQuery(
