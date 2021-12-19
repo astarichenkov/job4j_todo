@@ -1,6 +1,7 @@
 package ru.job4j.todo.store;
 
 import ru.job4j.todo.model.Item;
+import ru.job4j.todo.model.User;
 
 import java.util.List;
 
@@ -9,7 +10,13 @@ public interface Store {
 
     Item add(Item item);
 
-    Item findById(int id);
+    User add(User user);
+
+    Item findItemById(int id);
+
+    User findUserById(int id);
+
+    User findUserByEmail(String email);
 
     int setDone(int id);
 }

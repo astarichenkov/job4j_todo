@@ -3,6 +3,7 @@ package ru.job4j.todo.servlet;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ru.job4j.todo.model.Item;
+import ru.job4j.todo.model.User;
 import ru.job4j.todo.store.HbmStore;
 
 import javax.servlet.http.HttpServlet;
@@ -22,6 +23,8 @@ public class ItemServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Item item = GSON.fromJson(req.getReader(), Item.class);
         item.setCreated(new Timestamp(System.currentTimeMillis()));
+        User user = (User) req.getSession().getAttribute("user");
+        item.setUser(user);
         HbmStore.instOf().add(item);
 
         resp.setContentType("application/json; charset=utf-8");

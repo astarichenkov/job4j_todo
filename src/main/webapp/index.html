@@ -42,17 +42,19 @@
                 let td = '<td><button type="button" class="btn btn-light" onclick="changeStatus()">Выполнить</button></td>'
                 if (data.done) {
                     td ='<td>' +
-                            '<svg width="2em" height="2em" viewBox="0 0 16 16" className="bi bi-check2-all" fill="#00B74A" xmlns="http://www.w3.org/2000/svg">' +
-                            '<path fill-rule="evenodd" d="M12.354 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>' +
-                            '<path d="M6.25 8.043l-.896-.897a.5.5 0 1 0-.708.708l.897.896.707-.707zm1 2.414l.896.897a.5.5 0 0 0 .708 0l7-7a.5.5 0 0 0-.708-.708L8.5 10.293l-.543-.543-.707.707z"/>' +
-                            '</svg>' +
+                        '<svg width="2em" height="2em" viewBox="0 0 16 16" className="bi bi-check2-all" fill="#00B74A" xmlns="http://www.w3.org/2000/svg">' +
+                        '<path fill-rule="evenodd" d="M12.354 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>' +
+                        '<path d="M6.25 8.043l-.896-.897a.5.5 0 1 0-.708.708l.897.896.707-.707zm1 2.414l.896.897a.5.5 0 0 0 .708 0l7-7a.5.5 0 0 0-.708-.708L8.5 10.293l-.543-.543-.707.707z"/>' +
+                        '</svg>' +
                         '</td>';
                 }
 
+                let user = item.user;
                 $('#table tr:last').after('<tr>' +
-                    '<td>' + data.id + '</td>' +
-                    '<td>' + data.description + '</td>' +
-                    '<td>' + data.created + '</td>' +
+                    '<td>' + item.id + '</td>' +
+                    '<td>' + item.description + '</td>' +
+                    '<td>' + item.created + '</td>' +
+                    '<td>' + user.name + '</td>' +
 
                     td +
                     '</tr>');
@@ -74,21 +76,23 @@
                         continue;
                     }
                     let td = '<td></td>'
-                        if (item.done) {
-                            td ='<td>' +
-                                '<svg width="3em" height="3em" viewBox="0 0 16 16" className="bi bi-check2-all" fill="#00B74A" xmlns="http://www.w3.org/2000/svg">' +
-                                '<path fill-rule="evenodd" d="M12.354 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>' +
-                                '<path d="M6.25 8.043l-.896-.897a.5.5 0 1 0-.708.708l.897.896.707-.707zm1 2.414l.896.897a.5.5 0 0 0 .708 0l7-7a.5.5 0 0 0-.708-.708L8.5 10.293l-.543-.543-.707.707z"/>' +
-                                '</svg>' +
-                                '</button>' +
-                                '</td>';
-                        } else {
-                            td = '<td><button class="btn btn-light" onclick="changeStatus(this.value)" value="' + item.id + '">Выполнить</button></td>';
-                        }
+                    if (item.done) {
+                        td ='<td>' +
+                            '<svg width="3em" height="3em" viewBox="0 0 16 16" className="bi bi-check2-all" fill="#00B74A" xmlns="http://www.w3.org/2000/svg">' +
+                            '<path fill-rule="evenodd" d="M12.354 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>' +
+                            '<path d="M6.25 8.043l-.896-.897a.5.5 0 1 0-.708.708l.897.896.707-.707zm1 2.414l.896.897a.5.5 0 0 0 .708 0l7-7a.5.5 0 0 0-.708-.708L8.5 10.293l-.543-.543-.707.707z"/>' +
+                            '</svg>' +
+                            '</button>' +
+                            '</td>';
+                    } else {
+                        td = '<td><button class="btn btn-light" onclick="changeStatus(this.value)" value="' + item.id + '">Выполнить</button></td>';
+                    }
+                    let user = item.user;
                     $('#table tr:last').after('<tr>' +
                         '<td>' + item.id + '</td>' +
                         '<td>' + item.description + '</td>' +
                         '<td>' + item.created + '</td>' +
+                        '<td>' + user.name + '</td>' +
 
                         td +
                         '</tr>');
@@ -104,7 +108,6 @@
 
 
         function changeStatus(val) {
-            console.log(val);
             $.ajax({
                 type: 'GET',
                 url: 'http://localhost:8080/todo/status',
@@ -125,6 +128,9 @@
 <body>
 
 <div class="container pt-3">
+    <li class="nav-item">
+        <a class="nav-link" href="login.jsp">Выйти</a>
+    </li>
     <div class="row">
         <div class="card" style="width: 100%">
             <div class="card-body">
@@ -159,6 +165,7 @@
                         <th scope="col">#</th>
                         <th scope="col">Описание</th>
                         <th scope="col">Дата</th>
+                        <th scope="col">Автор</th>
                         <th scope="col">Статус</th>
                     </tr>
                     <tr>
