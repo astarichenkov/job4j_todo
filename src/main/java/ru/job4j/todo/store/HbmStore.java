@@ -96,23 +96,6 @@ public class HbmStore implements Store, AutoCloseable {
                 ).setParameter("email", email).getSingleResult());
     }
 
-
-//    @Override
-//    public User findUserByEmail(String email) {
-//        Session session = sf.openSession();
-//        session.beginTransaction();
-//
-//        Query query = session.createQuery(
-//                "from User u where u.email = :email"
-//        );
-//        query.setParameter("email", email);
-//
-//        User result = (User) query.getSingleResult();
-//        session.getTransaction().commit();
-//        session.close();
-//        return result;
-//    }
-
     @Override
     public void close() throws Exception {
         StandardServiceRegistryBuilder.destroy(registry);
