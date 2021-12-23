@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity
+@Entity(name = "Item")
 @Table(name = "item")
 public class Item {
     @Id
@@ -103,6 +103,7 @@ public class Item {
                 + ", description='" + description + '\''
                 + ", created=" + created
                 + ", done=" + done
+                + ", user=" + user
                 + '}';
     }
 }

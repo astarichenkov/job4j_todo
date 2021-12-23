@@ -5,10 +5,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.query.Query;
 import ru.job4j.todo.model.Item;
 import ru.job4j.todo.model.User;
 
-import javax.persistence.*;
 import java.util.List;
 import java.util.function.Function;
 
@@ -38,20 +38,18 @@ public class HbmStore implements Store, AutoCloseable {
 
     @Override
     public Item add(Item item) {
-        return (Item) this.tx(
+        int rsl = (int) this.tx(
                 session -> session.save(item)
         );
+        return rsl == 1 ? item : null;
     }
 
     @Override
     public User add(User user) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        System.out.println("hbm-add" + user);
-        session.save(user);
-        session.getTransaction().commit();
-        session.close();
-        return user;
+        int rsl = (int) this.tx(
+                session -> session.save(user)
+        );
+        return rsl == 1 ? user : null;
     }
 
     @Override
@@ -85,29 +83,35 @@ public class HbmStore implements Store, AutoCloseable {
 
     @Override
     public User findUserById(int id) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        User result = session.get(User.class, id);
-        session.getTransaction().commit();
-        session.close();
-        return result;
+        return this.tx(
+                session -> session.get(User.class, id)
+        );
     }
 
     @Override
     public User findUserByEmail(String email) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-
-        Query query = session.createQuery(
-                "from User u where u.email = :email"
-        );
-        query.setParameter("email", email);
-
-        User result = (User) query.getSingleResult();
-        session.getTransaction().commit();
-        session.close();
-        return result;
+        return (User) this.tx(session ->
+                session.createQuery(
+                        "from User u where u.email = :email"
+                ).setParameter("email", email).getSingleResult());
     }
+
+
+//    @Override
+//    public User findUserByEmail(String email) {
+//        Session session = sf.openSession();
+//        session.beginTransaction();
+//
+//        Query query = session.createQuery(
+//                "from User u where u.email = :email"
+//        );
+//        query.setParameter("email", email);
+//
+//        User result = (User) query.getSingleResult();
+//        session.getTransaction().commit();
+//        session.close();
+//        return result;
+//    }
 
     @Override
     public void close() throws Exception {
