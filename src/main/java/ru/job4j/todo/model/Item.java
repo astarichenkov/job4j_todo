@@ -3,7 +3,9 @@ package ru.job4j.todo.model;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity(name = "Item")
 @Table(name = "item")
@@ -37,6 +39,13 @@ public class Item {
         item.created = Timestamp.valueOf(LocalDateTime.now());
         item.done = false;
         return item;
+    }
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    private Set<Category> categories = new HashSet<>();
+
+    public void addCategory(Category category) {
+        this.categories.add(category);
     }
 
     public int getId() {
@@ -104,6 +113,7 @@ public class Item {
                 + ", created=" + created
                 + ", done=" + done
                 + ", user=" + user
+                + ", categories=" + categories
                 + '}';
     }
 }

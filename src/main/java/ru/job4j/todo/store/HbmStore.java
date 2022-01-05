@@ -6,9 +6,12 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.query.Query;
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Item;
+import ru.job4j.todo.model.Role;
 import ru.job4j.todo.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -94,6 +97,37 @@ public class HbmStore implements Store, AutoCloseable {
                 session.createQuery(
                         "from User u where u.email = :email"
                 ).setParameter("email", email).getSingleResult());
+    }
+
+    public void addNewCategory(Item item, String[] ids) {
+        try (Session session = sf.openSession()) {
+            session.beginTransaction();
+
+            for (String id : ids) {
+                Category category = session.find(Category.class, Integer.parseInt(id));
+                item.addCategory(category);
+            }
+            session.save(item);
+
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            sf.getCurrentSession().getTransaction().rollback();
+            System.out.println("FUCK " + e.getClass());
+        }
+    }
+
+    public List<Category> allCategories() {
+        List<Category> rsl = new ArrayList<>();
+        try (Session session = sf.openSession()) {
+            session.beginTransaction();
+
+            rsl = session.createQuery("select c from Category c", Category.class).list();
+
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            sf.getCurrentSession().getTransaction().rollback();
+        }
+        return rsl;
     }
 
     @Override

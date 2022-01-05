@@ -1,5 +1,6 @@
 package ru.job4j.todo.store;
 
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Item;
 import ru.job4j.todo.model.User;
 
@@ -19,4 +20,8 @@ public interface Store {
     User findUserByEmail(String email);
 
     int setDone(int id);
+
+    List<Category> allCategories();
+
+    void addNewCategory(Item item, String[] ids);
 }

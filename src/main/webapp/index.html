@@ -31,11 +31,13 @@
         }
 
         function saveItem() {
+            let categories = getSelectValues();
             $.ajax({
                 type: 'POST',
                 url: 'http://localhost:8080/todo/items',
                 data: JSON.stringify({
-                    description: $('#description').val()
+                    description: $('#description').val(),
+                    categories: categories
                 }),
                 dataType: 'json'
             }).done(function () {
@@ -44,6 +46,25 @@
             }).fail(function (err) {
                 console.log(err);
             });
+        }
+
+        function getSelectValues() {
+            let select = document.getElementById("cIds")
+            let result = [];
+            let options = select && select.options;
+            let opt;
+
+            for (let i = 0, iLen = options.length; i < iLen; i++) {
+                opt = options[i];
+                if (opt.selected) {
+                    let obj = {
+                        id: opt.value,
+                        name: opt.text
+                    }
+                    result.push(obj)
+                }
+            }
+            return result;
         }
 
         function refreshTable() {
@@ -70,12 +91,22 @@
                         td = '<td><button class="btn btn-light" onclick="changeStatus(this.value)" value="' + item.id + '">Выполнить</button></td>';
                     }
                     let user = item.user;
+                    let cat = "";
+                    let arrayLength = item.categories.length;
+                    if (arrayLength !== 0) {
+                        for (let i = 0; i < arrayLength; i++) {
+                            cat = cat + item.categories[i].name
+                            if (i !== arrayLength - 1) {
+                                cat = cat + " / "
+                            }
+                        }
+                    }
                     $('#table tr:last').after('<tr>' +
                         '<td>' + item.id + '</td>' +
                         '<td>' + item.description + '</td>' +
                         '<td>' + item.created + '</td>' +
                         '<td>' + user.name + '</td>' +
-
+                        '<td>' + cat + '</td>' +
                         td +
                         '</tr>');
                 }
@@ -86,7 +117,22 @@
 
         $(document).ready(function () {
             refreshTable();
-        })
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:8080/todo/category',
+                dataType: 'json'
+            }).done(function (data) {
+                for (let category of data) {
+                    let option = document.createElement("option");
+                    option.text = category.name;
+                    option.value = category.id;
+                    let select = document.getElementById("cIds");
+                    select.appendChild(option);
+                }
+            }).fail(function (err) {
+                console.log(err);
+            });
+        });
 
 
         function changeStatus(val) {
@@ -121,6 +167,7 @@
                     <div class="form-group">
                         <input type="text" class="form-control" id="description" aria-describedby=""
                                placeholder="Описание задачи">
+                        <select class="form-control" name="cIds" id="cIds" multiple style="margin-top: 10px"></select>
                     </div>
                     <button type="button" class="btn btn-primary" onclick="saveItem()">Сохранить</button>
                 </form>
@@ -149,6 +196,7 @@
                         <th scope="col">Описание</th>
                         <th scope="col">Дата</th>
                         <th scope="col">Автор</th>
+                        <th scope="col">Категория</th>
                         <th scope="col">Статус</th>
                     </tr>
                     <tr>
