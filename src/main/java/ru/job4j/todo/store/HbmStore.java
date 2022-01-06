@@ -112,7 +112,6 @@ public class HbmStore implements Store, AutoCloseable {
             session.getTransaction().commit();
         } catch (Exception e) {
             sf.getCurrentSession().getTransaction().rollback();
-            System.out.println("FUCK " + e.getClass());
         }
     }
 
