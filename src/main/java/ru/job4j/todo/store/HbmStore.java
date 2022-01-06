@@ -35,7 +35,8 @@ public class HbmStore implements Store, AutoCloseable {
     @Override
     public List<Item> findAll() {
         return this.tx(
-                session -> session.createQuery("from ru.job4j.todo.model.Item ORDER BY id").list()
+                session -> session.createQuery("select distinct i from ru.job4j.todo.model.Item i"
+                        + " join fetch i.categories ORDER BY i.id").list()
         );
     }
 

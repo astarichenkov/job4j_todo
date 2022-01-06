@@ -41,7 +41,7 @@ public class Item {
         return item;
     }
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Category> categories = new HashSet<>();
 
     public void addCategory(Category category) {
