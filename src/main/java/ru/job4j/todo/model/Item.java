@@ -1,8 +1,9 @@
 package ru.job4j.todo.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -16,7 +17,9 @@ public class Item {
 
     private String description;
 
-    private Timestamp created;
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-dd HH:mm:ss", timezone = "Europe/Moscow")
+    private Date created;
 
     private boolean done;
 
@@ -29,14 +32,14 @@ public class Item {
 
     public Item(String description) {
         this.description = description;
-        this.created = new Timestamp(System.currentTimeMillis());
+        this.created = new Date(System.currentTimeMillis());
         this.done = false;
     }
 
     public static Item of(String description) {
         Item item = new Item();
         item.description = description;
-        item.created = Timestamp.valueOf(LocalDateTime.now());
+        item.created = new Date(System.currentTimeMillis());
         item.done = false;
         return item;
     }
@@ -64,11 +67,11 @@ public class Item {
         this.description = description;
     }
 
-    public Timestamp getCreated() {
+    public Date getCreated() {
         return created;
     }
 
-    public void setCreated(Timestamp created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 
